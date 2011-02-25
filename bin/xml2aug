@@ -1,0 +1,60 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Config::Augeas::Exporter;
+use XML::LibXML;
+use Getopt::Long;
+
+my $file;
+my $root = '/';
+my $verbose;
+my $debug;
+my $help;
+
+my $result = GetOptions (
+   "file=s" => \$file,
+   "root=s" => \$root,
+   "verbose" => \$verbose,
+   "debug" => \$debug,
+   "help" => \$help,
+   );
+
+if ($help) {
+   usage();
+   exit 0;
+}
+
+$verbose ||= $debug;
+
+
+unless (defined($file)) {
+   die "E: You must specify a filename\n";
+}
+
+open (my $fh, "<$file") 
+  or die "E: Could not open $file: $!\n" ;
+my $doc = XML::LibXML->load_xml(IO => $fh);
+close $fh;
+
+my $aug = Config::Augeas::Exporter->new(root => $root);
+$aug->from_xml(xml => $doc);
+
+
+########
+# Subs
+########
+
+sub usage {
+   print "$0 [-f <file>] [-r fakeroot] [-v] [-d] [-h]
+
+ Flags:
+   -h, --help             Show this help
+   -v, --verbose          Verbose mode
+   -d, --debug            Debug mode
+
+ Options:
+   -f, --file <file>      Set XML file to import from
+   -r, --root <fakeroot>  Set fakeroot for Augeas
+";
+}
+
