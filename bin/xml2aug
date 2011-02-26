@@ -5,7 +5,7 @@ use Config::Augeas::Exporter;
 use XML::LibXML;
 use Getopt::Long;
 
-my $file;
+my $file = '-';
 my $root = '/';
 my $verbose;
 my $debug;
@@ -26,13 +26,8 @@ if ($help) {
 
 $verbose ||= $debug;
 
-
-unless (defined($file)) {
-   die "E: You must specify a filename\n";
-}
-
 open (my $fh, "<$file") 
-  or die "E: Could not open $file: $!\n" ;
+   or die "E: Could not open $file: $!\n" ;
 my $doc = XML::LibXML->load_xml(IO => $fh);
 close $fh;
 
@@ -53,8 +48,9 @@ sub usage {
    -d, --debug            Debug mode
 
  Options:
-   -f, --file <file>      Set XML file to import from
+   -f, --file <filename>  Read XML from file
    -r, --root <fakeroot>  Set fakeroot for Augeas
 ";
 }
+
 

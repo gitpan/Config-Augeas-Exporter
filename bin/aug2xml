@@ -7,6 +7,7 @@ use Getopt::Long;
 my $path = '/files';
 my $root = '/';
 my $excludes;
+my $file = '-';
 my $verbose;
 my $debug;
 my $help;
@@ -15,6 +16,7 @@ my $result = GetOptions (
    "path=s" => \$path,
    "root=s" => \$root,
    "exclude=s@" => \$excludes,
+   "file=s" => \$file,
    "verbose" => \$verbose,
    "debug" => \$debug,
    "help" => \$help,
@@ -36,7 +38,11 @@ if ($#$excludes >= 0) {
    $doc = $aug->to_xml(path => $path);
 }
 
-print $doc->toString;
+
+open(my $fh, ">$file")
+   or die "E: Failed to open $file for writing: $!\n";
+print $fh $doc->toString;
+close $fh;
 
 
 #######
@@ -55,6 +61,7 @@ sub usage {
    -p, --path <path>       Set path to export
    -r, --root <fakeroot>   Set fakeroot for Augeas
    -e, --exclude <pattern> Label pattern to exclude
+   -f, --file <filename>   Write XML to file
 ";
 }
 

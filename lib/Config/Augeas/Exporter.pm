@@ -28,7 +28,7 @@ use JSON qw();
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.3.0';
 
 # Default values
 my $PATH = '/files';
@@ -398,6 +398,11 @@ sub from_xml {
    my $aug = $self->{aug};
 
    my @files = $xml->find('/augeas/files/file')->get_nodelist();
+
+   if ($#files < 0) {
+      warn "W: The XML document contains no file to restore.";
+      return;
+   }
 
    for my $file (@files) {
       my $path = $file->getAttribute('path');

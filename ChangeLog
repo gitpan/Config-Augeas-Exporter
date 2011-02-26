@@ -1,3 +1,9 @@
+2011-02-26  Raphaël Pinson v0.3.0
+
+	* Allow reading from STDIN in xml2aug
+	* Add -f option to aug2xml to specify export file
+	* Test to_hash call
+
 2011-02-26  Raphaël Pinson v0.2.0
 
 	* Fix missing dependencies in Build.PL
