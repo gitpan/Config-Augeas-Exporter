@@ -33,6 +33,7 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More'      => 0,
+	'File::Path'      => 0
     },
     scripts => [
         'bin/aug2xml',

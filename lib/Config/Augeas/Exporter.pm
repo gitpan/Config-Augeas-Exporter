@@ -28,7 +28,7 @@ use JSON qw();
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.2.0';
 
 # Default values
 my $PATH = '/files';

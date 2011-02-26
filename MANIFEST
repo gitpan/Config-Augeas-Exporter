@@ -5,7 +5,10 @@ META.yml
 README
 lib/Config/Augeas/Exporter.pm
 t/00-load.t
+t/01-init.t
+t/02-to_xml.t
 t/pod.t
 bin/xml2aug
 bin/aug2xml
 Makefile.PL
+augeas-from/etc/hosts
