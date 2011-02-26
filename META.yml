@@ -1,11 +1,13 @@
 ---
 name: Config-Augeas-Exporter
-version: v0.3.0
-author: []
+version: 0.4
+author:
+  - 'RaphaÃ«l Pinson <raphink@cpan.org>'
 abstract: Export the Augeas tree to various formats
 license: lgpl
 resources:
   license: http://opensource.org/licenses/lgpl-license.php
+  repository: https://code.launchpad.net/config-augeas-exporter
 build_requires:
   File::Path: 0
   Test::More: 0
@@ -21,8 +23,17 @@ configure_requires:
 provides:
   Config::Augeas::Exporter:
     file: lib/Config/Augeas/Exporter.pm
-    version: v0.3.0
+    version: 0.4
 generated_by: Module::Build version 0.340201
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
+keywords:
+  - augeas
+  - export
+  - configuration
+  - configuration management
+  - xml
+  - yaml
+  - json
+  - object

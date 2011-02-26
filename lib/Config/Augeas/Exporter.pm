@@ -28,7 +28,7 @@ use JSON qw();
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.4';
 
 # Default values
 my $PATH = '/files';
@@ -179,7 +179,10 @@ W: You will not be able to import it back.\n";
 
 
 sub node_to_xml {
-   my ($self, $path, $excludes) = @_;
+   my ($self, $path, $excludes, $check_is_file) = @_;
+
+   # Default check is_file
+   $check_is_file = 1 unless(defined($check_is_file));
 
    # Get label from path
    my $label = get_label($path);
@@ -193,19 +196,25 @@ sub node_to_xml {
    my $aug = $self->{aug};
    my @children = $aug->match("$path/*");
 
+   # Should children check is_file?
+   my $children_check_is_file = $check_is_file;
+   if ($check_is_file && is_file($self, $path)) {
+      $children_check_is_file = 0;
+   }
+
    # Parse children
    my @child_elems;
    for my $child (@children) {
-      my @new_child_elems = (node_to_xml($self, $child, $excludes));
+      my @new_child_elems = (node_to_xml($self, $child, $excludes, $children_check_is_file));
       map { push @child_elems, $_ } @new_child_elems;
    }
 
    # Directories don't get their own node
-   return @child_elems if ($self->is_dir($path));
+   return @child_elems if ($check_is_file && $self->is_dir($path));
 
    # Files and entries get their own nodes
    my $elem;
-   if (is_file($self, $path)) {
+   if ($check_is_file && is_file($self, $path)) {
       # Files get <file path="$path"> nodes
       $elem = XML::LibXML::Element->new('file');
       my $file_path = get_file_path($path);

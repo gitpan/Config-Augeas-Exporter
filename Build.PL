@@ -23,6 +23,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name => 'Config::Augeas::Exporter',
     license     => 'lgpl',
+    dist_author => 'Raphaël Pinson <raphink@cpan.org>',
     requires    => {
         'Class::Accessor' => 0,
         'Config::Augeas'  => 0,
@@ -33,7 +34,7 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More'      => 0,
-	'File::Path'      => 0
+	'File::Path'      => 0,
     },
     scripts => [
         'bin/aug2xml',
@@ -42,6 +43,23 @@ my $builder = Module::Build->new(
     create_readme      => 1,
     sign               => 1,
     create_makefile_pl => 'traditional',
+    add_to_cleanup => [ 'augeas-to' ] ,
+    meta_merge => {
+       resources   => {
+           repository => 'https://code.launchpad.net/config-augeas-exporter',
+       },
+       keywords => [
+          'augeas',
+          'export',
+          'configuration',
+          'configuration management',
+          'xml',
+          'yaml',
+          'json',
+          'object',
+       ],
+    },
 );
 
 $builder->create_build_script();
+

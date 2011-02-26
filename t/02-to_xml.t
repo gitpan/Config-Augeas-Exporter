@@ -44,6 +44,3 @@ my $check_canonical = $aug_check->get('/files/etc/hosts/*[ipaddr="192.168.0.1"]/
 is($check_canonical, 'bilbo', "Found canonical value from new hosts file ($check_canonical)");
 
 
-# Cleanup
-rmtree($to_root);
-
