@@ -26,9 +26,9 @@ use Encode qw(encode);
 use YAML qw(Dump);
 use JSON qw();
 
-__PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json));
+__PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.1';
+our $VERSION = '0.1.1';
 
 # Default values
 my $PATH = '/files';
@@ -563,7 +563,7 @@ http://augeas.net/ : The Augeas project page
 
 =head1 AUTHOR
 
-RaphaE<euml>l Pinson, E<lt>raphink at gmail dot comE<gt>
+RaphaE<euml>l Pinson, E<lt>raphink at cpan dot orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

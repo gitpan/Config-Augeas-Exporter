@@ -22,9 +22,14 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     module_name => 'Config::Augeas::Exporter',
-    license     => 'LGPL',
+    license     => 'lgpl',
     requires    => {
-        'Config::Augeas' => '0',
+        'Class::Accessor' => 0,
+        'Config::Augeas'  => 0,
+        'XML::LibXML'     => 0,
+        'JSON'            => 0,
+        'YAML'            => 0,
+        'Encode'          => 0,
     },
     build_requires => {
         'Test::More'      => 0,

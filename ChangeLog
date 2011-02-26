@@ -1,3 +1,10 @@
+2011-02-26  Raphaël Pinson v0.1.1
+
+	* Fix missing dependencies in Build.PL
+	* Fix missing from_xml export
+	* Change maintainer email
+	* Add initialization test
+
 2011-02-25  Raphaël Pinson v0.1
 
 	* Original version.

@@ -1,20 +1,27 @@
 ---
-abstract: 'Export the Augeas tree to various formats'
+name: Config-Augeas-Exporter
+version: v0.1.1
 author: []
+abstract: Export the Augeas tree to various formats
+license: lgpl
+resources:
+  license: http://opensource.org/licenses/lgpl-license.php
 build_requires:
   Test::More: 0
+requires:
+  Class::Accessor: 0
+  Config::Augeas: 0
+  Encode: 0
+  JSON: 0
+  XML::LibXML: 0
+  YAML: 0
 configure_requires:
-  Module::Build: 0.36
-generated_by: 'Module::Build version 0.3624'
-license: LGPL
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
-name: Config-Augeas-Exporter
+  Module::Build: 0.340201
 provides:
   Config::Augeas::Exporter:
     file: lib/Config/Augeas/Exporter.pm
-    version: 0.1
-requires:
-  Config::Augeas: 0
-version: 0.1
+    version: v0.1.1
+generated_by: Module::Build version 0.340201
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
