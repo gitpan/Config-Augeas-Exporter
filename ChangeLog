@@ -1,3 +1,9 @@
+2011-02-27  Raphaël Pinson v0.7
+
+	* Bugfix release.
+	* Ignore stat nodes in import.
+	* Improve unit tests.
+
 2011-02-27  Raphaël Pinson v0.6
 
 	* Make path an array in to_xml().

@@ -29,7 +29,7 @@ use File::Path qw(mkpath);
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.6';
+our $VERSION = '0.7';
 
 # Default values
 my $PATH = '/files';
@@ -48,8 +48,9 @@ Config::Augeas::Exporter - Export the Augeas tree to various formats
 
   # Export to XML
   my $doc = $aug->to_xml( 
-    path => '/files/etc/fstab',
-    exclude => ('#comment')
+    path => ['/files/etc/fstab', '/files/etc/apt'],
+    exclude => ['#comment', '#mcomment'],
+    file_stat => 1,
     );
 
   print $doc->toString;
@@ -480,8 +481,12 @@ sub xml_to_node {
 
    my $aug = $self->{aug};
 
+   my $name = $elem->nodeName;
    my $type = $elem->nodeType;
    my $label = $elem->getAttribute('label');
+
+   # Ignore stat nodes
+   return if ($name eq 'stat');
 
    my $matchpath = "$path/*[last()]";
    $matchpath = sanitize_path($matchpath);

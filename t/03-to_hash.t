@@ -13,7 +13,7 @@ my $to_root = 'augeas-to/';
 
 my $from_aug = Config::Augeas::Exporter->new(root => $from_root);
 
-ok($from_aug, "Created new Augeas object for to_xml direction");
+ok($from_aug, "Created new Augeas object for to_hash direction");
 
 my $hash = $from_aug->to_hash();
 

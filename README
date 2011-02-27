@@ -9,8 +9,9 @@ SYNOPSIS
 
       # Export to XML
       my $doc = $aug->to_xml( 
-        path => '/files/etc/fstab',
-        exclude => ('#comment')
+        path => ['/files/etc/fstab', '/files/etc/apt'],
+        exclude => ['#comment', '#mcomment'],
+        file_stat => 1,
         );
 
       print $doc->toString;
