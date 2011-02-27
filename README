@@ -86,6 +86,9 @@ Methods
 
     xml The XML::LibXML::Document to use as source for import.
 
+    create_dirs
+        Boolean value, whether to create the directories if missing.
+
 SEE ALSO
     *   Config::Augeas : The Config::Augeas module
 
@@ -93,6 +96,13 @@ SEE ALSO
 
 AUTHOR
     Raphaël Pinson, <raphink at cpan dot org>
+
+CONTRIBUTING
+    This module is developed on Launchpad at:
+
+    <https://launchpad.net/config-augeas-exporter>
+
+    Feel free to fork the repository and submit pull requests
 
 COPYRIGHT AND LICENSE
     Copyright (C) 2011 by Raphaël Pinson

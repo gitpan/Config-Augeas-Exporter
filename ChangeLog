@@ -1,7 +1,16 @@
+2011-02-27  Raphaël Pinson v0.5
+
+	* Add create_dirs method to from_xml()
+	  to create missing directories.
+	* Add --create-dirs option to xml2aug
+	  to call create_dirs in from_xml().
+	* Module now depends on File::Path.
+	* Use create_dirs in t/02-to_xml.t.
+
 2011-02-26  Raphaël Pinson v0.4
 
 	* Add check_is_file calls to reduce the amount
-          of calls to Augeas
+	  of calls to Augeas
 	* Improve Build.PL and remove cleanup from t/02-to_xml.t
 
 2011-02-26  Raphaël Pinson v0.3.0

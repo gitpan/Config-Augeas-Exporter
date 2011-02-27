@@ -3,7 +3,6 @@ use strict;
 use Test::More tests => 7;
 use Config::Augeas;
 use Config::Augeas::Exporter;
-use File::Path;
 
 # pseudo root were input config file are read
 my $from_root = 'augeas-from/';
@@ -23,15 +22,14 @@ my $canonical = $doc->findvalue('/augeas/files/file[@path="/etc/hosts"]/node[nod
 
 is($canonical, 'bilbo', "Found canonical value from hosts in XML ($canonical)");
 
-# Prepare fakeroot to write
-rmtree($to_root);
-mkpath($to_root.'etc/', { mode => 0755 }) || die "Can't mkpath:$!";
-
 my $to_aug = Config::Augeas::Exporter->new(root => $to_root);
 
 ok($to_aug, "Created new Augeas object for from_xml direction");
 
-$to_aug->from_xml(xml => $doc);
+$to_aug->from_xml(
+   xml => $doc,
+   create_dirs => 1,
+   );
 
 ok($to_aug, "Wrote to Augeas from XML");
 

@@ -25,10 +25,11 @@ use XML::LibXML;
 use Encode qw(encode);
 use YAML qw(Dump);
 use JSON qw();
+use File::Path qw(mkpath);
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.4';
+our $VERSION = '0.5';
 
 # Default values
 my $PATH = '/files';
@@ -392,6 +393,10 @@ the contents of the XML.
 
 The XML::LibXML::Document to use as source for import.
 
+=item create_dirs
+
+Boolean value, whether to create the directories if missing.
+
 =back
 
 =cut
@@ -404,6 +409,7 @@ sub from_xml {
    die "E: No XML provided." unless(defined($args{xml}));
 
    my $xml = $args{xml};
+   my $create_dirs = $args{create_dirs};
    my $aug = $self->{aug};
 
    my @files = $xml->find('/augeas/files/file')->get_nodelist();
@@ -413,8 +419,27 @@ sub from_xml {
       return;
    }
 
+   # Get augeas root to create directories
+   my $aug_root = $aug->get('/augeas/root');
+   die "E: Could not determine Augeas root needed to create directories."
+      if ($create_dirs && !defined($aug_root));
+
+   # Add each file to the Augeas tree
    for my $file (@files) {
       my $path = $file->getAttribute('path');
+
+      # Create directories if requested
+      if($create_dirs) {
+         if ($path =~ m|^(.*)/([^/]+)$|) {
+           my $dir = "${aug_root}${1}";
+           unless (-d $dir) {
+              mkpath($dir) or die "E: Failed to create directory $dir: $!";
+           }
+         } else {
+            die "E: Could not get directory from file path $path.";
+         }
+      }
+
       my $aug_path = "/files${path}";
       # Clean the Augeas tree for this file
       $aug->rm($aug_path);
@@ -578,6 +603,14 @@ http://augeas.net/ : The Augeas project page
 =head1 AUTHOR
 
 RaphaE<euml>l Pinson, E<lt>raphink at cpan dot orgE<gt>
+
+=head1 CONTRIBUTING
+
+This module is developed on Launchpad at:
+
+L<https://launchpad.net/config-augeas-exporter> 
+
+Feel free to fork the repository and submit pull requests
 
 =head1 COPYRIGHT AND LICENSE
 

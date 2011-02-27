@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $file = '-';
 my $root = '/';
+my $create_dirs = 0;
 my $verbose;
 my $debug;
 my $help;
@@ -14,6 +15,7 @@ my $help;
 my $result = GetOptions (
    "file=s" => \$file,
    "root=s" => \$root,
+   "create-dirs" => \$create_dirs,
    "verbose" => \$verbose,
    "debug" => \$debug,
    "help" => \$help,
@@ -32,7 +34,10 @@ my $doc = XML::LibXML->load_xml(IO => $fh);
 close $fh;
 
 my $aug = Config::Augeas::Exporter->new(root => $root);
-$aug->from_xml(xml => $doc);
+$aug->from_xml(
+   xml => $doc,
+   create_dirs => $create_dirs,
+   );
 
 
 ########
@@ -50,6 +55,7 @@ sub usage {
  Options:
    -f, --file <filename>  Read XML from file
    -r, --root <fakeroot>  Set fakeroot for Augeas
+   -c, --create-dirs      Create directories if missing
 ";
 }
 

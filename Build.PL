@@ -31,6 +31,7 @@ my $builder = Module::Build->new(
         'JSON'            => 0,
         'YAML'            => 0,
         'Encode'          => 0,
+        'File::Path'      => 0,
     },
     build_requires => {
         'Test::More'      => 0,

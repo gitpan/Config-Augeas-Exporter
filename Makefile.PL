@@ -11,14 +11,14 @@ WriteMakefile
                          ],
           'VERSION_FROM' => 'lib/Config/Augeas/Exporter.pm',
           'PREREQ_PM' => {
+                           'Test::More' => 0,
                            'YAML' => 0,
                            'Config::Augeas' => 0,
-                           'Class::Accessor' => 0,
-                           'Encode' => 0,
-                           'Test::More' => 0,
                            'XML::LibXML' => 0,
                            'File::Path' => 0,
-                           'JSON' => 0
+                           'Class::Accessor' => 0,
+                           'JSON' => 0,
+                           'Encode' => 0
                          }
         )
 ;
