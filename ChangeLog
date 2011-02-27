@@ -1,3 +1,16 @@
+2011-02-27  Raphaël Pinson v0.6
+
+	* Make path an array in to_xml().
+	* Make --path a multiple value option in aug2xml.
+	* Fix passing of @paths and @excludes and default
+	  values in aug2xml.
+	* Add file_stat to to_xml() and stat_to_xml() sub.
+	* Add --include-file-stat option to aug2xml.
+	* Move getting aug_root to new().
+	* Update POD.
+	* Do not trigger is_file and file_stat when analyzing
+	  /augeas//error.
+
 2011-02-27  Raphaël Pinson v0.5
 
 	* Add create_dirs method to from_xml()

@@ -29,7 +29,7 @@ use File::Path qw(mkpath);
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.5';
+our $VERSION = '0.6';
 
 # Default values
 my $PATH = '/files';
@@ -108,6 +108,9 @@ sub new {
    # Associate to object
    $self->{aug} = $aug;
 
+   # Get augeas root
+   $self->{aug_root} = $aug->get('/augeas/root');
+
    return $self;
 }
 
@@ -122,11 +125,15 @@ Export the Augeas tree to a XML::LibXML::Document object.
 
 =item path
 
-C<path> is the Augeas path to export. If ommitted, it will default to '/files'.
+An array of Augeas paths to export. If ommitted, it will default to '/files'.
 
 =item exclude
 
-A list of label patterns to exclude from the export.
+An array of label patterns to exclude from the export.
+
+=item file_stat
+
+A boolean, whether to include file stat.
 
 =back
 
@@ -137,17 +144,22 @@ sub to_xml {
    my $self = shift;
    my %args = @_;
 
-   my $path = $args{path};
-   my @excludes = ($args{exclude});
+   my @paths = @{$args{path}} if $args{path};
+   my @excludes = @{$args{exclude}} if $args{exclude};
+   my $file_stat = $args{file_stat};
 
-   # Default path
-   $path ||= $PATH;
+   # Defaults
+   @paths = $PATH if ($#paths < 0);
 
    # Initialize XML document
    my $doc = XML::LibXML::Document->new('1.0', 'utf-8');
 
    # Get XML elements from augeas recursively
-   my @file_elems = (node_to_xml($self, $path, \@excludes));
+   my @file_elems;
+   for my $path (@paths) {
+      my @new_file_elems = (node_to_xml($self, $path, \@excludes, 1, $file_stat));
+      map { push @file_elems, $_ } @new_file_elems;
+   }
 
    # Add a files node for all file entries
    my $files = XML::LibXML::Element->new('files');
@@ -163,7 +175,7 @@ W: You will not be able to import it back.\n";
    }
 
    # Add an error node for errors
-   my @error_elems = (node_to_xml($self, '/augeas//error'));
+   my @error_elems = (node_to_xml($self, '/augeas//error', [], 0, 0));
    my $errors = XML::LibXML::Element->new('error');
    map { $errors->appendChild($_) } @error_elems;
 
@@ -180,10 +192,13 @@ W: You will not be able to import it back.\n";
 
 
 sub node_to_xml {
-   my ($self, $path, $excludes, $check_is_file) = @_;
+   my ($self, $path, $excludes, $check_is_file, $incl_file_stat) = @_;
 
    # Default check is_file
    $check_is_file = 1 unless(defined($check_is_file));
+
+   # Default incl_file_stat
+   $incl_file_stat = 0 unless(defined($incl_file_stat));
 
    # Get label from path
    my $label = get_label($path);
@@ -206,7 +221,7 @@ sub node_to_xml {
    # Parse children
    my @child_elems;
    for my $child (@children) {
-      my @new_child_elems = (node_to_xml($self, $child, $excludes, $children_check_is_file));
+      my @new_child_elems = (node_to_xml($self, $child, $excludes, $children_check_is_file, $incl_file_stat));
       map { push @child_elems, $_ } @new_child_elems;
    }
 
@@ -220,6 +235,12 @@ sub node_to_xml {
       $elem = XML::LibXML::Element->new('file');
       my $file_path = get_file_path($path);
       $elem->setAttribute("path", $file_path);
+      
+      # Include file stat if requested
+      if ($incl_file_stat) {
+         my $file_stat = $self->stat_to_xml($file_path);
+         $elem->appendChild($file_stat);
+      }
    } else {
       # Entries get <node label="$label"> nodes
       $elem = XML::LibXML::Element->new('node');
@@ -420,7 +441,7 @@ sub from_xml {
    }
 
    # Get augeas root to create directories
-   my $aug_root = $aug->get('/augeas/root');
+   my $aug_root = $self->{aug_root};
    die "E: Could not determine Augeas root needed to create directories."
       if ($create_dirs && !defined($aug_root));
 
@@ -580,6 +601,26 @@ sub is_dir {
                                        && !defined($value));
    # Otherwise it's not a directory
    return 0;
+}
+
+
+sub stat_to_xml {
+   my ($self, $path) = @_;
+   my $aug_root = $self->{aug_root};
+
+   my %stat;
+   ($stat{dev}, $stat{ino}, $stat{mode}, $stat{nlink},
+    $stat{uid}, $stat{gid}, $stat{rdev}, $stat{size},
+    $stat{atime}, $stat{mtime}, $stat{ctime},
+    $stat{blksize}, $stat{blocks}) = stat("${aug_root}${path}");
+
+   my $stat_elem = XML::LibXML::Element->new('stat');
+
+   for my $k (keys(%stat)) {
+      $stat_elem->setAttribute($k, $stat{$k});
+   }
+
+   return $stat_elem;
 }
 
 

@@ -43,11 +43,14 @@ Methods
     Export the Augeas tree to a XML::LibXML::Document object.
 
     path
-        "path" is the Augeas path to export. If ommitted, it will default to
+        An array of Augeas paths to export. If ommitted, it will default to
         '/files'.
 
     exclude
-        A list of label patterns to exclude from the export.
+        An array of label patterns to exclude from the export.
+
+    file_stat
+        A boolean, whether to include file stat.
 
   to_hash( ... )
     Export the Augeas tree to a hash.

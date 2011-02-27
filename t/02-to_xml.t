@@ -14,7 +14,7 @@ my $from_aug = Config::Augeas::Exporter->new(root => $from_root);
 
 ok($from_aug, "Created new Augeas object for to_xml direction");
 
-my $doc = $from_aug->to_xml();
+my $doc = $from_aug->to_xml(exclude => ['#comment']);
 
 ok($doc, "Got XML document");
 

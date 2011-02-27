@@ -1,6 +1,6 @@
 ---
 name: Config-Augeas-Exporter
-version: 0.5
+version: 0.6
 author:
   - 'RaphaÃ«l Pinson <raphink@cpan.org>'
 abstract: Export the Augeas tree to various formats
@@ -24,7 +24,7 @@ configure_requires:
 provides:
   Config::Augeas::Exporter:
     file: lib/Config/Augeas/Exporter.pm
-    version: 0.5
+    version: 0.6
 generated_by: Module::Build version 0.340201
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
