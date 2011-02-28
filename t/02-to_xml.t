@@ -22,7 +22,7 @@ my $doc = $from_aug->to_xml(
 
 ok($doc, "Got XML document");
 
-my $canonical = $doc->findvalue('/augeas/files/file[@path="/etc/hosts"]/node[node[@label="ipaddr"]="192.168.0.1"]/node[@label="canonical"]');
+my $canonical = $doc->findvalue('/augeas/files/file[@path="/etc/hosts"]/node[node[@label="ipaddr"]="192.168.0.1"]/node[@label="canonical"]/value');
 
 is($canonical, 'bilbo', "Found canonical value from hosts in XML ($canonical)");
 

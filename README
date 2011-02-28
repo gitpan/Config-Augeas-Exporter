@@ -23,7 +23,10 @@ SYNOPSIS
       close $fh;
 
       my $aug = Config::Augeas::Exporter->new(root => $root);
-      $aug->from_xml(xml => $doc);
+      $aug->from_xml(
+         xml => $doc,
+         create_dirs => 1,
+         );
 
 DESCRIPTION
     This module allows to export the Augeas tree to various formats and

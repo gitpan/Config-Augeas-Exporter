@@ -29,7 +29,7 @@ use File::Path qw(mkpath);
 
 __PACKAGE__->mk_accessors(qw(to_xml to_hash to_yaml to_json from_xml));
 
-our $VERSION = '0.7';
+our $VERSION = '1.0.0';
 
 # Default values
 my $PATH = '/files';
@@ -62,7 +62,10 @@ Config::Augeas::Exporter - Export the Augeas tree to various formats
   close $fh;
 
   my $aug = Config::Augeas::Exporter->new(root => $root);
-  $aug->from_xml(xml => $doc);
+  $aug->from_xml(
+     xml => $doc,
+     create_dirs => 1,
+     );
 
 
 =head1 DESCRIPTION
@@ -253,7 +256,11 @@ sub node_to_xml {
 
    # Add value to element
    my $value = $aug->get($path);
-   $elem->appendTextNode(encode('utf-8', $value)) if defined($value);
+   if (defined($value)) {
+      my $value_elem = XML::LibXML::Element->new('value');
+      $value_elem->appendTextNode(encode('utf-8', $value)) if defined($value);
+      $elem->appendChild($value_elem);
+   }
 
    return $elem;
 }
@@ -482,7 +489,6 @@ sub xml_to_node {
    my $aug = $self->{aug};
 
    my $name = $elem->nodeName;
-   my $type = $elem->nodeType;
    my $label = $elem->getAttribute('label');
 
    # Ignore stat nodes
@@ -496,7 +502,14 @@ sub xml_to_node {
       # Insert last node
       $aug->insert($label, "after", $lastpath);
    } else {
-      $aug->set(sanitize_path("$path/$label"), '');
+      # Config::Augeas doesn't take undef
+      #   as a correct value or provide clear
+      # This is an ugly trick to do the same
+      #   hoping the previous children did not
+      #   create a ##foo node
+      my $create_path = sanitize_path("$path/$label/#foo");
+      $aug->set($create_path, "foo");
+      $aug->rm($create_path);
    }
 
    $matchpath = sanitize_path("${path}/${label}[last()]");
@@ -505,9 +518,9 @@ sub xml_to_node {
    my $value;
 
    for my $child ($elem->childNodes()) {
-      if ($child->nodeType == XML_TEXT_NODE) {
+      if ($child->nodeName eq 'value') {
          # Text node
-         $value = $child->nodeValue;
+         $value = $child->textContent;
       } else {
          $self->xml_to_node($child, $newpath);
       }
